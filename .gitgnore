@@ -1,0 +1,15 @@
+# Binários para programas e plug-ins
+* .exe
+* .exe ~
+* .dll
+* .so
+* .dylib
+
+# Teste binário, construído com `go test -c`
+* .test
+
+# Saída da ferramenta de cobertura go, especificamente quando usada com LiteIDE
+* .out
+
+# Diretórios de dependência (remova o comentário abaixo para incluí-lo)
+# vendor /
