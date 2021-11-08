@@ -9,10 +9,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const ENV_TESTE = "test"
-const DBTYPETEST = "sqlite3"
-const DSNTEST = ":memory:"
-
 type DataBase struct {
 	Db             *gorm.DB
 	Dsn            string
@@ -32,9 +28,9 @@ func NewDb() *DataBase {
 func NewDbTest() *gorm.DB {
 
 	dnInstace := NewDb()
-	dnInstace.Env = ENV_TESTE
-	dnInstace.DbTypeTest = DBTYPETEST
-	dnInstace.DsnTest = DSNTEST
+	dnInstace.Env = "test"
+	dnInstace.DbTypeTest = "sqlite3"
+	dnInstace.DsnTest = ":memory:"
 
 	dnInstace.AutoMigratedDb = true
 	dnInstace.Debug = true
@@ -54,7 +50,7 @@ func (d *DataBase) Connect() (*gorm.DB, error) {
 
 	var err error
 
-	if d.Env != ENV_TESTE {
+	if d.Env != "test" {
 		d.Db, err = gorm.Open(d.DbType, d.Dsn)
 	} else {
 		d.Db, err = gorm.Open(d.DbTypeTest, d.DsnTest)
