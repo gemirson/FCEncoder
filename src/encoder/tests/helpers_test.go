@@ -1,9 +1,10 @@
 package tests_test
 
 import (
-	"encoder/framework/utils"
-	"github.com/stretchr/testify/require"
+	"encoder/framework/helpers"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestIsJson(t *testing.T) {
@@ -13,10 +14,10 @@ func TestIsJson(t *testing.T) {
   				"status": "pending"
 			}`
 
-	err := utils.IsJson(json)
+	err := helpers.IsJson(json)
 	require.Nil(t, err)
 
 	json = `wes`
-	err = utils.IsJson(json)
+	err = helpers.IsJson(json)
 	require.Error(t, err)
 }
