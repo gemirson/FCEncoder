@@ -18,13 +18,13 @@ func TestJobRepositoryDb_InsertNewJobReturnSucess(t *testing.T) {
 	db := database.NewDbTest()
 	defer db.Close()
 
-	repo := repositories.VideoRepositoryDd{Db: db}
+	repo := repositories.VideoRepositoryDb{Db: db}
 	repo.Insert(video)
 
 	job, err := domain.NewJob("output_path", "Pending", video)
 	require.Nil(t, err)
 
-	repoJob := repositories.JobRepositoryDd{Db: db}
+	repoJob := repositories.JobRepositoryDb{Db: db}
 	repoJob.Insert(job)
 
 	j, err := repoJob.Find(job.ID)
@@ -42,13 +42,13 @@ func TestJobRepositoryDb_UpdateJobReturnJob(t *testing.T) {
 	db := database.NewDbTest()
 	defer db.Close()
 
-	repo := repositories.VideoRepositoryDd{Db: db}
+	repo := repositories.VideoRepositoryDb{Db: db}
 	repo.Insert(video)
 
 	job, err := domain.NewJob("output_path", "Pending", video)
 	require.Nil(t, err)
 
-	repoJob := repositories.JobRepositoryDd{Db: db}
+	repoJob := repositories.JobRepositoryDb{Db: db}
 	repoJob.Insert(job)
 
 	job.Status = "Complete"

@@ -13,17 +13,17 @@ type VideoRepository interface {
 	Find(id string) (*domain.Video, error)
 }
 
-type VideoRepositoryDd struct {
+type VideoRepositoryDb struct {
 	Db *gorm.DB
 }
 
-func NewVideoRepository(db *gorm.DB) *VideoRepositoryDd {
-	return &VideoRepositoryDd{
+func NewVideoRepository(db *gorm.DB) *VideoRepositoryDb {
+	return &VideoRepositoryDb{
 		Db: db,
 	}
 }
 
-func (repo VideoRepositoryDd) Insert(video *domain.Video) (*domain.Video, error) {
+func (repo VideoRepositoryDb) Insert(video *domain.Video) (*domain.Video, error) {
 
 	if video.ID == "" {
 		video.ID = uuid.NewV4().String()
@@ -37,7 +37,7 @@ func (repo VideoRepositoryDd) Insert(video *domain.Video) (*domain.Video, error)
 	return video, nil
 }
 
-func (repo VideoRepositoryDd) Find(id string) (*domain.Video, error) {
+func (repo VideoRepositoryDb) Find(id string) (*domain.Video, error) {
 
 	var video domain.Video
 	repo.Db.Preload("Jobs").First(&video, "id=?", id)

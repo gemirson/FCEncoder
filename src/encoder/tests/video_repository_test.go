@@ -18,7 +18,7 @@ func TestVideoRepositoryDb_InsertNewVideoReturnSucess(t *testing.T) {
 	db := database.NewDbTest()
 	defer db.Close()
 
-	repo := repositories.VideoRepositoryDd{Db: db}
+	repo := repositories.VideoRepositoryDb{Db: db}
 	repo.Insert(video)
 
 	v, err := repo.Find(video.ID)

@@ -13,17 +13,17 @@ type JobRepository interface {
 	Update(job *domain.Job) (*domain.Job, error)
 }
 
-type JobRepositoryDd struct {
+type JobRepositoryDb struct {
 	Db *gorm.DB
 }
 
-func NewJobRepository(db *gorm.DB) *VideoRepositoryDd {
-	return &VideoRepositoryDd{
+func NewJobRepository(db *gorm.DB) *JobRepositoryDb {
+	return &JobRepositoryDb{
 		Db: db,
 	}
 }
 
-func (repo JobRepositoryDd) Insert(job *domain.Job) (*domain.Job, error) {
+func (repo JobRepositoryDb) Insert(job *domain.Job) (*domain.Job, error) {
 
 	err := repo.Db.Create(job).Error
 
@@ -34,7 +34,7 @@ func (repo JobRepositoryDd) Insert(job *domain.Job) (*domain.Job, error) {
 	return job, nil
 }
 
-func (repo JobRepositoryDd) Find(id string) (*domain.Job, error) {
+func (repo JobRepositoryDb) Find(id string) (*domain.Job, error) {
 
 	var job domain.Job
 	repo.Db.Preload("Video").First(&job, "id=?", id)
@@ -47,7 +47,7 @@ func (repo JobRepositoryDd) Find(id string) (*domain.Job, error) {
 
 }
 
-func (repo JobRepositoryDd) Update(job *domain.Job) (*domain.Job, error) {
+func (repo JobRepositoryDb) Update(job *domain.Job) (*domain.Job, error) {
 
 	err := repo.Db.Save(&job).Error
 
