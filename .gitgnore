@@ -5,10 +5,11 @@
 * .so
 * .dylib
 * .env
+.
 
 # Teste binário, construído com `go test -c`
 * .test
-
+.pgdata/
 # Saída da ferramenta de cobertura go, especificamente quando usada com LiteIDE
 * .out
 
