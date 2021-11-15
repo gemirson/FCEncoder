@@ -205,6 +205,15 @@ func (v *VideoServiceAzure) ExtractedPathDirectoryTarget() string {
 	return os.Getenv("localStoragePath") + "/" + v.Video.ID
 }
 
+func (v *VideoServiceAzure) InsertVideo() error {
+	_, err := v.VideoRepository.Insert(v.Video)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func printOutput(out []byte) {
 
 	if len(out) > 0 {
