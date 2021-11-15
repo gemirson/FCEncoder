@@ -1,12 +1,13 @@
 version: '3'
 
-services: 
- app: 
-  build: .
-  volumes:
-    - .:/go/src
+services:
 
-db:
+  app:
+    build: .
+    volumes:
+      - .:/go/src/
+
+  db:
     image: postgres:9.4
     restart: always
     tty: true
@@ -16,9 +17,9 @@ db:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=encoder
     ports:
-      - "5432:5432"    
+      - "5432:5432"
 
-rabbit:
+  rabbit:
     image: "rabbitmq:3-management"
     environment:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
