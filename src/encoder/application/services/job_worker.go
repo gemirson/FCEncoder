@@ -4,6 +4,9 @@ import (
 	"encoder/domain"
 	"encoder/framework/helpers"
 	"encoding/json"
+	"os"
+	"sync"
+	"time"
 
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
@@ -14,6 +17,8 @@ type JobWorkerResult struct {
 	Message *amqp.Delivery
 	Error   error
 }
+
+var Mutex = &sync.Mutex{}
 
 func JobWorker(messageChannel chan amqp.Delivery, returnChan chan JobWorkerResult, jobService JobService, job domain.Job, workerID int) {
 
@@ -27,7 +32,9 @@ func JobWorker(messageChannel chan amqp.Delivery, returnChan chan JobWorkerResul
 		}
 
 		err = json.Unmarshal(message.Body, &jobService.VideoServiceAzure.Video)
+		Mutex.Lock()
 		jobService.VideoServiceAzure.Video.ID = uuid.NewV4().String()
+		Mutex.Unlock()
 
 		if err != nil {
 			returnChan <- returnJobResult(domain.Job{}, message, err)
@@ -39,23 +46,31 @@ func JobWorker(messageChannel chan amqp.Delivery, returnChan chan JobWorkerResul
 			returnChan <- returnJobResult(domain.Job{}, message, err)
 			continue
 		}
-
+		Mutex.Lock()
 		err = jobService.VideoServiceAzure.InsertVideo()
+		Mutex.Unlock()
 
 		if err != nil {
 			returnChan <- returnJobResult(domain.Job{}, message, err)
 			continue
 		}
 
-		jobService.createJobWithStatusSTARTING()
+		job.Video = jobService.VideoServiceAzure.Video
+		job.OutPutBucketPath = os.Getenv("outputBucketName")
+		job.ID = uuid.NewV4().String()
+		job.Status = "STARTING"
+		job.CreatedAt = time.Now()
 
-		err = jobService.InsertJob()
+		Mutex.Lock()
+		_, err = jobService.JobRepository.Insert(&job)
+		Mutex.Unlock()
 
 		if err != nil {
 			returnChan <- returnJobResult(domain.Job{}, message, err)
 			continue
 		}
 
+		jobService.Job = &job
 		err = jobService.Start()
 
 		if err != nil {

@@ -74,7 +74,9 @@ func (v *VideoServiceAzure) Download(bucketName string) error {
 
 	// Here's how to download the blob
 	downloadResponse, err := blobURL.Download(ctx, 0, 0, azblob.BlobAccessConditions{}, false, azblob.ClientProvidedKeyOptions{})
-
+	if err != nil {
+		return err
+	}
 	downloadedData := &bytes.Buffer{}
 	bodyStream := downloadResponse.Body(azblob.RetryReaderOptions{MaxRetryRequests: 20})
 	downloadedData.ReadFrom(bodyStream)

@@ -95,9 +95,9 @@ func (j *JobService) performUpload() error {
 
 	videoUpload := NewVideoUploadAzure()
 	videoUpload.OutputBucket = os.Getenv("outputBucketName")
-	videoUpload.VideoPath = j.VideoServiceAzure.ExtractedPathSource()
+	videoUpload.VideoPath = j.VideoServiceAzure.ExtractedPathDirectoryTarget()
 
-	concurrency, _ := strconv.Atoi("CONCURRENCY_UPLOAD")
+	concurrency, _ := strconv.Atoi(os.Getenv("CONCURRENCY_UPLOAD"))
 	doneUpload := make(chan string)
 	go videoUpload.ProcessUpload(concurrency, doneUpload, j.VideoServiceAzure.AzureContainer)
 

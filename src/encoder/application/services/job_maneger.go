@@ -38,12 +38,12 @@ func NewJobManager(db *gorm.DB, rabbitMQ *queue.RabbitMQ, jobReturnChannel chan 
 
 func (j *JobManager) Start(ch *amqp.Channel) {
 
-	videoService := NewVideoService()
+	videoService := NewVideoServiceAzure()
 	videoService.VideoRepository = repositories.VideoRepositoryDb{Db: j.Db}
 
 	jobService := JobService{
-		JobRepository: repositories.JobRepositoryDb{Db: j.Db},
-		VideoService:  videoService,
+		JobRepository:     repositories.JobRepositoryDb{Db: j.Db},
+		VideoServiceAzure: videoService,
 	}
 
 	concurrency, err := strconv.Atoi(os.Getenv("CONCURRENCY_WORKERS"))
@@ -71,7 +71,9 @@ func (j *JobManager) Start(ch *amqp.Channel) {
 
 func (j *JobManager) notifySuccess(jobResult JobWorkerResult, ch *amqp.Channel) error {
 
+	Mutex.Lock()
 	jobJson, err := json.Marshal(jobResult.Job)
+	Mutex.Unlock()
 
 	if err != nil {
 		return err
