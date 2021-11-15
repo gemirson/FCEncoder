@@ -6,6 +6,9 @@ import (
 	"errors"
 	"os"
 	"strconv"
+	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 type JobService struct {
@@ -132,4 +135,21 @@ func (j *JobService) failJob(error error) error {
 	}
 
 	return error
+}
+
+func (j *JobService) createJobWithStatusSTARTING() {
+	j.Job.CreatedAt = time.Now()
+	j.Job.ID = uuid.NewV4().String()
+	j.Job.Status = "STARTING"
+	j.Job.Video = j.VideoServiceAzure.Video
+	j.Job.OutPutBucketPath = os.Getenv("outputBucketName")
+}
+
+func (j *JobService) InsertJob() error {
+	_, err := j.JobRepository.Insert(j.Job)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
